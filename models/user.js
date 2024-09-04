@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    id: { type: UUID, required: true },
+    id: { type: mongoose.Schema.Types.ObjectId, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
     phoneNumber: { type: String, required: true },
-    locationPreferences: { type: Array of LocationPreference, required: true },
+    locationPreferences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'LocationPreference' }],
     emergencyContact: { type: String, required: true },
-    createdAt: { type: DateTime, required: true },
-    updatedAt: { type: DateTime, required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
 });
 
 //This converts our schema to a model

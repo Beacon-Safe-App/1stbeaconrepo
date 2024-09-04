@@ -3,7 +3,12 @@ const mongoose = require('mongoose');
 const app = express();
 const methodOverride = require('method-override');
 const port = process.env.PORT || 8080;
-const catalogController = require('./controllers/user');
+const emergencyEventController = require('./emergencyevent');
+const locationController = require('./location');
+const locationPreferenceController = require('./locationpreference');
+const notificationController = require('./notification');
+const routeController = require('./route');
+const userController = require('./user');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 
@@ -27,6 +32,12 @@ app.use(methodOverride("_method"));
 app.use(express.json());
 app.use(express.static('public'));
 app.use(bodyParser.json());
+app.use('/emergencyevent', emergencyEventController);
+app.use('/location', locationController);
+app.use('/locationpreference', locationPreferenceController);
+app.use('/notification', notificationController);
+app.use('/route', routeController);
+app.use('user', userController);
 
 //ROUTES
 app.get('/', (req, res) => {

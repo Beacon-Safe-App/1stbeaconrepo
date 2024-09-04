@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const emergencyEventSchema = new Schema({
-    id: { type: UUID, required: true },
-    userId: {type: Foreign Key to User, required: true},
-    eventType: {type: Enum, required: true},
-    timeStamp: {type: DateTime, required: true},
-    location: {type: String, required: true},
-    status: {type: Enum, required: true},
+    id: { type: mongoose.Schema.Types.ObjectId, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    eventType: { type: String, enum: ['fire', 'medical', 'police'], required: true },
+    timeStamp: { type: Date, default: Date.now, required: true },
+    location: { type: String, required: true },
+    status: { type: String, enum: ['active', 'resolved', 'pending'], required: true },
 });
 
 //This converts our schema to a model

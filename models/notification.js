@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const notificationSchema = new Schema({
-    id: { type: UUID, required: true },
-    userId: {type: Foreign Key to User, required: true},
-    message: {type: String, required: true},
-    type: {type: Enum, required: true},
-    isRead: {type: Boolean, required: true},
-    createdAt: {type: DateTime, required: true},
+    id: { type: mongoose.Schema.Types.ObjectId, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    message: { type: String, required: true },
+    type: { type: String, enum: ['alert', 'info', 'warning'], required: true },
+    isRead: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
 });
 
 //This converts our schema to a model

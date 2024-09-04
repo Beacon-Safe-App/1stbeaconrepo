@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const locationSchema = new Schema({
-    id: { type: UUID, required: true },
+    id: { type: mongoose.Schema.Types.ObjectId, required: true },
     name: { type: String, required: true },
-    type: { type: Enum, required: true },
+    type: { type: String, enum: ['hospital', 'police', 'safehouse'], required: true },
     address: { type: String, required: true },
-    latitude: { type: Float, required: true },
-    longitude: { type: Float, required: true },
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
     phoneNumber: { type: String, required: true },
     hours: { type: String, required: true },
     is24Hour: { type: Boolean, required: true },
-    createdAt: { type: DateTime, required: true },
-    updatedAt: { type: DateTime, required: true },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
 });
 
 //This converts our schema to a model
