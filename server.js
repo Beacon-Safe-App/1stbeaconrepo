@@ -3,47 +3,41 @@ const mongoose = require('mongoose');
 const app = express();
 const methodOverride = require('method-override');
 const port = process.env.PORT || 8080;
-const emergencyEventController = require('./emergencyevent');
-const locationController = require('./location');
-const locationPreferenceController = require('./locationpreference');
-const notificationController = require('./notification');
-const routeController = require('./route');
-const userController = require('./user');
+const router = require('./controllers/beacon');
+
+const emergencyEventController = require('./models/emergencyevent');
+const locationController = require('./models/location');
+const locationPreferenceController = require('./models/locationpreference');
+const notificationController = require('./models/notification');
+const routeController = require('./models/route');
+const userController = require('./models/user');
+
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
-//MONGODB CONNECTION
+// MONGODB CONNECTION
 const mongoURI = process.env.MONGOURI;
 
 async function connectToMongo() {
     try {
         await mongoose.connect(mongoURI);
-        console.log("connection with mongodb established");
+        console.log("Connection with MongoDB established");
     } catch (err) {
-        console.error("error connecting to mongodb: ", err);
+        console.error("Error connecting to MongoDB: ", err);
     }
 };
 
 connectToMongo();
 
-//MIDDLEWARE
+// MIDDLEWARE
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.json());
 app.use(express.static('public'));
 app.use(bodyParser.json());
-app.use('/emergencyevent', emergencyEventController);
-app.use('/location', locationController);
-app.use('/locationpreference', locationPreferenceController);
-app.use('/notification', notificationController);
-app.use('/route', routeController);
-app.use('user', userController);
 
-//ROUTES
-app.get('/', (req, res) => {
-    res.render('2landing.ejs');
-});
-
+// ROUTES
 app.use('/emergencyevent', emergencyEventController);
 app.use('/location', locationController);
 app.use('/locationpreference', locationPreferenceController);
@@ -51,8 +45,16 @@ app.use('/notification', notificationController);
 app.use('/route', routeController);
 app.use('/user', userController);
 
-app.get('/registration', (req, res) => {
-    res.render('0registration.ejs');
+app.get('/', (req, res) => {
+    res.render('2landing.ejs');
+});
+
+app.get('/signin', (req, res) => {
+    res.render('signin.ejs');
+});
+
+app.get('/register', (req, res) => {
+    res.render('register.ejs');
 });
 
 app.get('/preferences', (req, res) => {
@@ -75,7 +77,35 @@ app.get('/resources', (req, res) => {
     res.render('6resources.ejs');
 });
 
-//PORT LISTENER
+app.post('/signin', async (req, res) => {
+    const { phoneNumber } = req.body;
+    const user = await User.findOne({ phoneNumber });
+
+    if (user) {
+        res.redirect('/map');
+    } else {
+        res.redirect('/register');
+    }
+});
+
+app.post('/register', async (req, res) => {
+    const { name, email, password, phoneNumber, emergencyContact } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+        name,
+        email,
+        password: hashedPassword,
+        phoneNumber,
+        emergencyContact
+    });
+
+    await newUser.save();
+    res.redirect('/signin');
+});
+
+// PORT LISTENER
 app.listen(port, () => {
-    console.log(`I am listening on port: ${port}`)
+    console.log(`I am listening on port: ${port}`);
 });
