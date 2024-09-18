@@ -8,6 +8,10 @@ import { Logout } from "../controllers/auth.js";
 
 const router = express.Router();
 
+router.get('/register', (req, res) => {
+    res.send('Register route');
+});
+
 // Register route -- POST request
 router.post(
     "/register",
@@ -35,6 +39,11 @@ router.post(
     Register
 );
 
+router.get('/login', (req, res) => {
+    // Login logic here
+    res.send('Login route');
+});
+
 // Login route == POST request
 router.post(
     "/login",
@@ -46,6 +55,11 @@ router.post(
     Validate,
     Login
 );
+
+router.get('/logout', (req, res) => {
+    // Logout logic here
+    res.send('Logout route');
+});
 
 // Logout route ==
 router.get('/logout', Logout);

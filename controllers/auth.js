@@ -61,14 +61,15 @@ export async function Login(req, res) {
 export async function Register(req, res) {
     // get required variables from request body
     // using es6 object destructing
-    const { first_name, last_name, email, password } = req.body;
+    console.log(req.body)
+    const { first_name, last_name, email } = req.body;
     try {
         // create an instance of a user
         const newUser = new User({
             first_name,
             last_name,
             email,
-            password,
+            password: req.body.password
         });
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -87,10 +88,11 @@ export async function Register(req, res) {
                 "Thank you for registering with us. Your account has been successfully created.",
         });
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             status: "error",
             code: 500,
-            data: [],
+            data: [err],
             message: "Internal Server Error",
         });
     }
